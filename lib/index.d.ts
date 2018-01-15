@@ -1,4 +1,4 @@
-import { ICacheProvider, ICacheProviderOptions, CacheProvider } from 'sarah.js';
+import { ICacheProvider, ICacheProviderOptions, CacheProvider } from '@sarahjs/core';
 import * as redis from 'redis';
 export interface IRedisProviderOptions extends ICacheProviderOptions {
     providerName: string;
@@ -28,5 +28,5 @@ export declare class RedisProvider extends CacheProvider implements ICacheProvid
         hash: string;
     }[], ttl?: number): Promise<any | any[]>;
     get(requestedHashes: string[]): Promise<any | any[]>;
-    invalidateCache(requestedHash: any, ttl: number): Promise<{}>;
+    invalidateCache(requestedHash: any, ttl: number): Promise<any>;
 }

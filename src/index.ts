@@ -1,6 +1,6 @@
 
 
-import {ICacheProvider, ICacheProviderOptions, CacheProvider} from 'sarah.js';
+import {ICacheProvider, ICacheProviderOptions, CacheProvider} from '@sarahjs/core';
 
 import * as _ from 'lodash';
 import * as redis from 'redis';
@@ -96,7 +96,7 @@ export class RedisProvider extends CacheProvider implements ICacheProvider {
         return this.compare(requestedHashes);
     }
 
-    public invalidateCache(requestedHash: any, ttl: number) {
+    public invalidateCache(requestedHash: any, ttl: number): Promise<any> {
         return new Promise((resolve, reject) => {
             this.client.expire(requestedHash, ttl, (err) => {
                 resolve();
