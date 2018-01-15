@@ -20,7 +20,7 @@ export declare class RedisProvider extends CacheProvider implements ICacheProvid
      * if ttl is present set expiration as well.
      *
      * @param {{val: Object; hash: string}[]} requestedData
-     * @param {number} ttl
+     * @param {number} ttl - In Milliseconds
      * @return {Promise<Object | Object[]>}
      */
     set(requestedData: {

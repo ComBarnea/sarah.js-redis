@@ -5,8 +5,6 @@ import {ICacheProvider, ICacheProviderOptions, CacheProvider} from '@sarahjs/cor
 import * as _ from 'lodash';
 import * as redis from 'redis';
 
-
-
 export interface IRedisProviderOptions extends ICacheProviderOptions {
     providerName: string;
     compareFn?(singleHash: string);
@@ -51,7 +49,7 @@ export class RedisProvider extends CacheProvider implements ICacheProvider {
                 if (err) resolve([]);
 
                 replies.forEach((singleReply) => {
-                    foundCache.push(JSON.parse(singleReply));
+                    if (singleReply) foundCache.push(JSON.parse(singleReply));
                 });
 
                 resolve(foundCache);
@@ -64,11 +62,12 @@ export class RedisProvider extends CacheProvider implements ICacheProvider {
      * if ttl is present set expiration as well.
      *
      * @param {{val: Object; hash: string}[]} requestedData
-     * @param {number} ttl
+     * @param {number} ttl - In Milliseconds
      * @return {Promise<Object | Object[]>}
      */
     public set(requestedData: {val: any, hash: string}[], ttl?: number): Promise<any | any[]> {
         return new Promise((resolve, reject) => {
+            // due to redis working with seconds
             const batchJobs = [];
 
             for (let i = 0; i < requestedData.length; i ++) {
@@ -77,9 +76,9 @@ export class RedisProvider extends CacheProvider implements ICacheProvider {
 
 
                 if (ttl) {
-                    batchJobs.push('SETEX', singleRequestData.hash, ttl, JSON.stringify(singleRequestData.val));
+                    batchJobs.push(['PSETEX', singleRequestData.hash, ttl, JSON.stringify(singleRequestData.val)]);
                 } else {
-                    batchJobs.push('SET', singleRequestData.hash, JSON.stringify(singleRequestData.val));
+                    batchJobs.push(['SET', singleRequestData.hash, JSON.stringify(singleRequestData.val)]);
                 }
 
             }
